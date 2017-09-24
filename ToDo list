@@ -1,0 +1,5 @@
+1. Replace bin packing algorithm.
+2. Allow waste in the knapsack.
+3. Write code for reducing sizes by a common multiple.
+4. Rearrange order in which tree is traversed.
+5. Figure out how to process test instances.
