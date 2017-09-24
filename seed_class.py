@@ -10,6 +10,7 @@ class seed():
         self.children = []
         self.structure = structure
         self.parent = parent
+        self.children = []
         self.amount = amount
         self.stripSize = stripSize
         self.seedAmount = GreatestSize(bulk)
@@ -21,7 +22,9 @@ class seed():
             NewSeed = ReturnChild(self.table)
             if NewSeed is not None:
                 newBulk = FindBulk(self.bins, NewSeed, self.seedAmount, self.stripSize)
-                return seed(newBulk, NewSeed, self, self.seedAmount, self.stripSize)
+                newSeed = seed(newBulk, NewSeed, self, self.seedAmount, self.stripSize)
+                self.children.append(newSeed)
+                return newSeed
             else:
                 self.seedAmount -= 1
                 Subset = FindSubsetFromStrips(self.bins, self.seedAmount)
@@ -74,7 +77,6 @@ def BulkToSizes(bulk):
             except KeyError:
                 Sizes[size] = bulk[strip]['amount']
     return Sizes
-
 
 def ProcessSizesIntoDictionary(sizes):
     returnDictionary = {}
