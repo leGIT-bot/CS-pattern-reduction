@@ -124,7 +124,6 @@ def ProcessSizesIntoDictionary(sizes):
     return returnDictionary
 
 def ProcessStripsIntoDictionary(sizes):
-    i = 0
     returnDictionary = {}
     for i in sizes:
         try:

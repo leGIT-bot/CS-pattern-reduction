@@ -15,8 +15,11 @@ def ExamineNode(Node, Nodes, NodeStack):
         #print('Tableb: ' + str(Node.table))
         NewNode = Node.getChild()
         if NewNode is not None:
-            Nodes.append(NewNode)
-            NodeStack.append(NewNode)
+            if not IgnoreNewNode(NewNode):
+                Nodes.append(NewNode)
+                NodeStack.append(NewNode)
+            else:
+                i -= 1
         else:
             if i == 0:
                 #print('Tablea: ' + str(Node.table))
@@ -25,15 +28,30 @@ def ExamineNode(Node, Nodes, NodeStack):
                 print('----------')
             break
 
+def IgnoreNewNode(NewNode):
+    NodeSeed = NewNode.structure
+    Parent = NewNode.parent
+
+    while Parent is not None:
+        if NodeSeed == Parent.structure:
+            return True
+        else:
+            Parent = Parent.parent
+    return False
+
 def CompileSolution(Node):
     Solution = {}
     while Node.parent is not None:
-        Solution[str(Node.structure)] = {'amount':Node.amount, 'strip':Node.structure}
+        try:
+            Solution[str(Node.structure)]['amount'] += Node.amount
+        except KeyError:
+            Solution[str(Node.structure)] = {'amount': Node.amount, 'strip': Node.structure}
         Node = Node.parent
     return Solution
 
 if __name__ == '__main__':
-    StripSize = 10
-    Sizes = DynamicCuttingStock([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5], StripSize)
+    StripSize = 560
+    Sizes = {138:22, 152:25, 156:12, 171:14, 182:18, 188:18, 193:20, 200:10, 205:12, 210:14, 214:16, 215:18, 220:20}
+    Sizes = DynamicCuttingStock(Sizes, StripSize)
 
     SolveCuttingStock(Sizes, StripSize)

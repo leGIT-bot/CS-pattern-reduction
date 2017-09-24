@@ -23,10 +23,10 @@ class seed():
                 newBulk = FindBulk(self.bins, NewSeed, self.seedAmount, self.stripSize)
                 return seed(newBulk, NewSeed, self, self.seedAmount, self.stripSize)
             else:
-                Subset = FindSubsetFromStrips(self.bins, self.seedAmount)
-                self.table = GenerateDynamicTable(Subset, self.stripSize)
                 self.seedAmount -= 1
-                print(str(Subset) + ': ' + str(self.seedAmount))
+                Subset = FindSubsetFromStrips(self.bins, self.seedAmount)
+                #print(str(Subset) + ': ' + str(self.seedAmount))
+                self.table = GenerateDynamicTable(Subset, self.stripSize)
         return None
 
 def GreatestSize(strips):
@@ -56,7 +56,7 @@ def FindSubsetFromStrips(strips, subset):
 
     RemoveSizes = []
     for number in returnSizes:
-        returnSizes[number] = (returnSizes[number] + 1)//subset
+        returnSizes[number] = (returnSizes[number])//subset
         if returnSizes[number] == 0:
             RemoveSizes.append(number)
 
