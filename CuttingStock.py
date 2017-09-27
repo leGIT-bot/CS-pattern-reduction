@@ -1,5 +1,6 @@
 from seed_class import seed
-from DynamicProgrammingAlgorithm import DynamicCuttingStock
+#from DynamicProgrammingAlgorithm import DynamicCuttingStock as BinPacking
+from BinPacking import BinPacking as BinPacking
 import time
 
 class CuttingStockProblem():
@@ -89,7 +90,7 @@ class CuttingStockProblem():
                 Parent = Parent.parent
 
         Solution = self.CompileSolution(NewNode)
-        if self.CalculateStrips(Solution) > self.BestStrips:
+        if self.CalculateStrips(Solution) > self.BestStrips + 1:
             return True
 
         return False
@@ -138,7 +139,13 @@ class CuttingStockProblem():
         return nStrips
 
     def CompileSolution(self, Node):
-        Solution = Node.bins
+        Solution = {}
+        for bin in Node.bins:
+            try:
+                Solution[str(bin)][Node.bins[bin]['amount']] += Node.bins[bin]['amount']
+            except KeyError:
+                Solution[str(bin)] = {'amount': Node.bins[bin]['amount'], 'strip': Node.bins[bin]['strip']}
+
         while Node.parent is not None:
             try:
                 Solution[str(Node.structure)]['amount'] += Node.amount
@@ -153,8 +160,8 @@ if __name__ == '__main__':
     #StripSize = 10
     #Sizes = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]
     #StripSize = 10
-    #Sizes = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5]
+    #Sizes = {2:15, 3:10, 5:8}
 
-    Sizes = DynamicCuttingStock(Sizes, StripSize)
+    Sizes = BinPacking(Sizes, StripSize, False)
 
-    CuttingStockProblem(Sizes, StripSize, 5)
+    CuttingStockProblem(Sizes, StripSize, 180)

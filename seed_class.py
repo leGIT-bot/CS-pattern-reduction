@@ -1,5 +1,6 @@
 import random
-from DynamicProgrammingAlgorithm import DynamicCuttingStock
+#from DynamicProgrammingAlgorithm import DynamicCuttingStock as BinPacking
+from BinPacking import BinPacking as BinPacking
 
 from ReturnSeeds import GenerateDynamicTable
 from ReturnSeeds import ReturnChild
@@ -48,11 +49,16 @@ def GreatestSize(strips):
     return LargestSize
 
 def FindBulk(bulk, seed, amount, stripSize):
+    #print(seed)
+    #print(bulk)
     BulkSizes = BulkToSizes(bulk)
+    #print(BulkSizes)
     for i in seed:
         BulkSizes[i] -= amount
 
-    BulkSizes = DynamicCuttingStock(BulkSizes, stripSize)
+    BulkSizes = BinPacking(BulkSizes, stripSize, False)
+    #print(BulkSizes)
+    #print('____')
     return BulkSizes
 
 def FindSubsetFromStrips(strips, subset):

@@ -1,6 +1,6 @@
 import random
 
-def DynamicCuttingStock(sizes, stripSize):
+def DynamicCuttingStock(sizes, stripSize, blank):
     if isinstance(sizes, list):
         sizes = ProcessSizesIntoDictionary(sizes)
     Strips = []
