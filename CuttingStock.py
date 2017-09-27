@@ -1,10 +1,19 @@
 from seed_class import seed
 from DynamicProgrammingAlgorithm import DynamicCuttingStock
+import time
 
 class CuttingStockProblem():
-    def __init__(self, Solution, StripSize):
+    def __init__(self, Solution, StripSize, runTime):
+        self.TimeSpentBinPacking = 0
+        self.TimeSpentKnapSack = 0
+        self.TimeSpentOther = 0
+
+        self.StartTime = 0
+        self.LastCheck = 0
+        self.MaxRunTime = runTime
+
         self.StripSize = StripSize
-        self.BaseNode = seed(Solution, None, None, 0, StripSize)
+        self.BaseNode = seed(Solution, None, None, 0, StripSize, self)
         self.Nodes = [self.BaseNode]
         self.NodesToExamineStack = [self.BaseNode]
 
@@ -15,19 +24,38 @@ class CuttingStockProblem():
 
         self.SolveCuttingStock()
 
+    def TimeSelf(self, Timer):
+        Timer += time.clock() - self.LastCheck
+        self.LastCheck = time.clock()
+        return Timer
+
+    def PrintTimes(self):
+        print('Time spent bin packing: ' + str(self.TimeSpentBinPacking))
+        print('Time spent knapsack: ' + str(self.TimeSpentKnapSack))
+        print('Time spent other: ' + str(self.TimeSpentOther))
+        print('Time spent: ' + str(time.clock() - self.StartTime))
+
     def SolveCuttingStock(self):
+        self.StartTime = time.clock()
+
         Halt = False
         while not Halt:
             while len(self.NodesToExamineStack) > 0:
                 # print(NodesToExamineStack[len(NodesToExamineStack) - 1].bins)
                 self.ExamineNode(self.NodesToExamineStack.pop(len(self.NodesToExamineStack) - 1))
+                if self.MaxRunTime < (time.clock() - self.StartTime):
+                    break
+            if self.MaxRunTime < (time.clock() - self.StartTime):
+                break
             for node in self.Nodes:
                 self.ExamineNode(node)
+
             if len(self.NodesToExamineStack) == 0:
                 Halt = True
 
         self.PrintCurrentSolution()
         print('FINAL SOLUTION')
+        self.PrintTimes()
 
     def ExamineNode(self, Node):
         for i in range(10):
@@ -129,4 +157,4 @@ if __name__ == '__main__':
 
     Sizes = DynamicCuttingStock(Sizes, StripSize)
 
-    CuttingStockProblem(Sizes, StripSize)
+    CuttingStockProblem(Sizes, StripSize, 5)

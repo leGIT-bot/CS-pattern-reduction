@@ -5,7 +5,8 @@ from ReturnSeeds import GenerateDynamicTable
 from ReturnSeeds import ReturnChild
 
 class seed():
-    def __init__(self, bulk, structure, parent, amount, stripSize):
+    def __init__(self, bulk, structure, parent, amount, stripSize, LargerProblem):
+        self.LargerProblem = LargerProblem
         self.bins = bulk
         self.children = []
         self.structure = structure
@@ -15,21 +16,27 @@ class seed():
         self.stripSize = stripSize
         self.seedAmount = GreatestSize(bulk)
         Subset = FindSubsetFromStrips(bulk, self.seedAmount)
+        LargerProblem.TimeSpentOther = LargerProblem.TimeSelf(LargerProblem.TimeSpentOther)
         self.table = GenerateDynamicTable(Subset, stripSize)
+        LargerProblem.TimeSpentKnapSack = LargerProblem.TimeSelf(LargerProblem.TimeSpentKnapSack)
 
     def getChild(self):
         while self.seedAmount > 1:
+            self.LargerProblem.TimeSpentOther = self.LargerProblem.TimeSelf(self.LargerProblem.TimeSpentOther)
             NewSeed = ReturnChild(self.table)
+            self.LargerProblem.TimeSpentKnapSack = self.LargerProblem.TimeSelf(self.LargerProblem.TimeSpentKnapSack)
             if NewSeed is not None:
                 newBulk = FindBulk(self.bins, NewSeed, self.seedAmount, self.stripSize)
-                newSeed = seed(newBulk, NewSeed, self, self.seedAmount, self.stripSize)
+                self.LargerProblem.TimeSpentBinPacking = self.LargerProblem.TimeSelf(self.LargerProblem.TimeSpentBinPacking)
+                newSeed = seed(newBulk, NewSeed, self, self.seedAmount, self.stripSize, self.LargerProblem)
                 self.children.append(newSeed)
                 return newSeed
             else:
                 self.seedAmount -= 1
                 Subset = FindSubsetFromStrips(self.bins, self.seedAmount)
-                #print(str(Subset) + ': ' + str(self.seedAmount))
+                self.LargerProblem.TimeSpentOther = self.LargerProblem.TimeSelf(self.LargerProblem.TimeSpentOther)
                 self.table = GenerateDynamicTable(Subset, self.stripSize)
+                self.LargerProblem.TimeSpentKnapSack = self.LargerProblem.TimeSelf(self.LargerProblem.TimeSpentKnapSack)
         return None
 
 def GreatestSize(strips):
